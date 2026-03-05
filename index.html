@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tmux Cheat Sheet</title>
+  <style>
+    :root {
+      --bg-primary:     #0d1117;
+      --bg-secondary:   #161b22;
+      --bg-card:        #1c2128;
+      --bg-code:        #21262d;
+      --border:         #30363d;
+      --accent:         #2f81f7;
+      --accent-dim:     #1a4a8a;
+      --text-primary:   #e6edf3;
+      --text-secondary: #8b949e;
+      --text-code:      #79c0ff;
+      --green:          #3fb950;
+      --purple:         #bc8cff;
+      --orange:         #ffa657;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+        Arial, sans-serif;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding: 2.5rem 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      margin-top: 0.6rem;
+      font-size: 1rem;
+      max-width: 560px;
+      margin-inline: auto;
+    }
+
+    header .badge {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.25rem 0.75rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── Section ── */
+    section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px 6px 0 0;
+      border-bottom: none;
+    }
+
+    .section-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-blue   { background: var(--accent); }
+    .dot-green  { background: var(--green); }
+    .dot-purple { background: var(--purple); }
+    .dot-orange { background: var(--orange); }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 0 0 6px 6px;
+      overflow: hidden;
+    }
+
+    tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    tr:last-child { border-bottom: none; }
+
+    tr:hover { background: var(--bg-secondary); }
+
+    td {
+      padding: 0.65rem 1rem;
+      vertical-align: middle;
+      font-size: 0.9rem;
+    }
+
+    td:first-child {
+      width: 42%;
+      white-space: nowrap;
+    }
+
+    td:last-child {
+      color: var(--text-secondary);
+    }
+
+    /* ── Key badges ── */
+    .keys {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+    }
+
+    kbd {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+        monospace;
+      font-size: 0.78rem;
+      color: var(--text-code);
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: inset 0 -1px 0 var(--border);
+      white-space: nowrap;
+    }
+
+    .sep {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      user-select: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+        monospace;
+      font-size: 0.82rem;
+      color: var(--text-code);
+      background: var(--bg-code);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Two-column grid for smaller sections ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .grid-2 { grid-template-columns: 1fr; }
+
+      td:first-child { width: 50%; }
+
+      header h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ══ Header ══ -->
+    <header>
+      <h1>Tmux Cheat Sheet</h1>
+      <p>
+        A terminal multiplexer that lets you run many windows inside a single
+        terminal buffer, split into panes and controlled through one keyboard.
+      </p>
+      <span class="badge">Prefix key: Ctrl + B</span>
+    </header>
+
+    <!-- ══ Attach & Detach ══ -->
+    <section>
+      <div class="section-title">
+        <span class="dot dot-blue"></span> Attach &amp; Detach
+      </div>
+      <table>
+        <tr>
+          <td><code>$ tmux</code></td>
+          <td>Start a new tmux session</td>
+        </tr>
+        <tr>
+          <td><code>$ tmux attach</code></td>
+          <td>Attach to a session running in the background</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>d</kbd>
+            </div>
+          </td>
+          <td>Detach from session, leaving it running in the background</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>&amp;</kbd>
+            </div>
+          </td>
+          <td>Exit and quit tmux</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>?</kbd>
+            </div>
+          </td>
+          <td>List all key bindings (press <kbd>Q</kbd> to exit)</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- ══ Window Management + Session Management ══ -->
+    <div class="grid-2">
+
+      <section>
+        <div class="section-title">
+          <span class="dot dot-green"></span> Window Management
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span><kbd>C</kbd>
+              </div>
+            </td>
+            <td>Create new window</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span><kbd>N</kbd>
+              </div>
+            </td>
+            <td>Move to next window</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span><kbd>P</kbd>
+              </div>
+            </td>
+            <td>Move to previous window</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span><kbd>L</kbd>
+              </div>
+            </td>
+            <td>Move to last window</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span><kbd>0–9</kbd>
+              </div>
+            </td>
+            <td>Move to window by index</td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <div class="section-title">
+          <span class="dot dot-orange"></span> Session Management
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span><kbd>)</kbd>
+              </div>
+            </td>
+            <td>Move to next session</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span><kbd>(</kbd>
+              </div>
+            </td>
+            <td>Move to previous session</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="keys">
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+                <span class="sep">then</span>
+                <kbd>Ctrl</kbd><span class="sep">+</span><kbd>Z</kbd>
+              </div>
+            </td>
+            <td>Suspend session</td>
+          </tr>
+        </table>
+      </section>
+
+    </div><!-- /grid-2 -->
+
+    <!-- ══ Split Window into Panes ══ -->
+    <section style="margin-top: 2rem;">
+      <div class="section-title">
+        <span class="dot dot-purple"></span> Split Window into Panes
+      </div>
+      <table>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>%</kbd>
+            </div>
+          </td>
+          <td>Vertical split — panes side by side</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>"</kbd>
+            </div>
+          </td>
+          <td>Horizontal split — one pane below the other</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>O</kbd>
+            </div>
+          </td>
+          <td>Move to other pane</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>!</kbd>
+            </div>
+          </td>
+          <td>Remove all panes but the current one</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>Q</kbd>
+            </div>
+          </td>
+          <td>Display pane index numbers</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span>
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>↑</kbd>
+              <span class="sep">/</span>
+              <kbd>↓</kbd>
+            </div>
+          </td>
+          <td>Resize current pane north / south</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span>
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>←</kbd>
+              <span class="sep">/</span>
+              <kbd>→</kbd>
+            </div>
+          </td>
+          <td>Resize current pane west / east</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- ══ Multiplex ══ -->
+    <section>
+      <div class="section-title">
+        <span class="dot dot-blue"></span> Multiplex
+      </div>
+      <table>
+        <tr>
+          <td>
+            <div class="keys">
+              <kbd>Ctrl</kbd><span class="sep">+</span><kbd>B</kbd>
+              <span class="sep">then</span><kbd>:</kbd>
+            </div>
+          </td>
+          <td>Access the tmux command prompt</td>
+        </tr>
+        <tr>
+          <td>
+            <code>:setw synchronize-panes on</code>
+          </td>
+          <td>Synchronize panes — send a command to many hosts at once</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- ══ Footer ══ -->
+    <footer>
+      <p>
+        Based on the
+        <a href="https://opensource.com" target="_blank" rel="noopener">
+          opensource.com
+        </a>
+        Tmux Cheat Sheet by Seth Kenlon &mdash;
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank"
+           rel="noopener">CC BY-SA 4.0</a>
+      </p>
+    </footer>
+
+  </div><!-- /container -->
+</body>
+</html>
+
